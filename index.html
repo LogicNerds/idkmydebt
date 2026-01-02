@@ -3,8 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IDK My Budget - Debt & Bill Tracker</title>
+    <title>IDK My Budget - Debt Tracker</title>
     <style>
+        :root {
+            --primary-start: #2c5f7a;
+            --primary-end: #1a3a4a;
+            --accent-primary: #0d9488;
+            --accent-secondary: #0f766e;
+            --accent-bg: #f0fdfa;
+            --balance-start: #0d9488;
+            --balance-end: #0f766e;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,225 +23,461 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c5f7a 0%, #1a3a4a 100%);
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
             min-height: 100vh;
-            padding: 20px;
-            transition: background 0.3s ease;
+            padding: 0;
         }
-
-        /* Theme Variations */
-        body.ocean { background: linear-gradient(135deg, #2E3192 0%, #1BFFFF 100%); }
-        body.sunset { background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%); }
-        body.forest { background: linear-gradient(135deg, #134E5E 0%, #71B280 100%); }
-        body.midnight { background: linear-gradient(135deg, #000428 0%, #004e92 100%); }
-        body.cotton-candy { background: linear-gradient(135deg, #FFA8E2 0%, #A8E6FF 100%); }
-        body.fire { background: linear-gradient(135deg, #C33764 0%, #1D2671 100%); }
 
         .container {
-            max-width: 1200px;
+            max-width: 500px;
             margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            box-shadow: 0 0 50px rgba(0,0,0,0.2);
         }
 
-        .header {
+        /* Login Screen */
+        .login-screen {
+            padding: 40px 20px;
             text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+        }
+
+        .login-screen h1 {
             color: white;
-            margin-bottom: 30px;
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        .login-screen p {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 40px;
+            font-size: 0.95em;
+            font-style: italic;
+            line-height: 1.4;
+            max-width: 300px;
         }
 
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .auth-section {
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .auth-section h2 {
-            color: white;
-            font-size: 2em;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .google-btn {
+        .google-signin-btn {
             background: white;
             color: #333;
-            border: none;
             padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1.2em;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+            margin: 0 auto;
         }
 
-        .google-btn:hover {
+        .google-signin-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .google-btn svg {
+        .google-icon {
             width: 24px;
             height: 24px;
         }
 
-        .app-section {
-            display: none;
-        }
-
-        .user-info {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+            color: white;
+            padding: 25px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .user-details {
+        .header-left h1 {
+            font-size: 2em;
+        }
+
+        .header-right {
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
+        .theme-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background 0.2s;
+        }
+
+        .theme-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
         .user-avatar {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
+            border: 2px solid white;
         }
 
         .logout-btn {
-            background: #dc3545;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
             color: white;
-            border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
+            font-size: 0.9em;
+            transition: background 0.2s;
         }
 
         .logout-btn:hover {
-            background: #c82333;
+            background: rgba(255,255,255,0.3);
         }
 
-        .theme-selector {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        /* Main Content */
+        .main-content {
+            padding: 20px 20px 80px 20px;
         }
 
-        .theme-buttons {
+        /* Financial Overview Card */
+        .total-balance {
+            background: linear-gradient(135deg, var(--balance-start) 0%, var(--balance-end) 100%);
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+        }
+
+        .total-balance h2 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .balance-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .balance-item h3 {
+            font-size: 0.75em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+
+        .balance-item .amount {
+            font-size: 1.4em;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Debts/Bills Section */
+        .accounts-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .account-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .account-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 3px 10px rgba(13, 148, 136, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .account-card.selected {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .account-info h4 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .debt-type-badge {
+            font-size: 0.75em;
+            color: #666;
+            background: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 3px;
+        }
+
+        .recurring-badge {
+            background: #ffc107;
+            color: #333;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .account-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.6;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .delete-btn {
+            color: #dc2626;
+        }
+
+        .account-bottom {
+            border-top: 1px solid #eee;
+            padding-top: 10px;
             margin-top: 10px;
         }
 
-        .theme-btn {
-            padding: 10px;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-
-        .theme-btn.active {
-            border-color: #333;
-            transform: scale(1.05);
-        }
-
-        .theme-btn.purple { background: linear-gradient(135deg, #2c5f7a 0%, #1a3a4a 100%); color: white; }
-        .theme-btn.ocean { background: linear-gradient(135deg, #2E3192 0%, #1BFFFF 100%); color: white; }
-        .theme-btn.sunset { background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%); color: white; }
-        .theme-btn.forest { background: linear-gradient(135deg, #134E5E 0%, #71B280 100%); color: white; }
-        .theme-btn.midnight { background: linear-gradient(135deg, #000428 0%, #004e92 100%); color: white; }
-        .theme-btn.cotton-candy { background: linear-gradient(135deg, #FFA8E2 0%, #A8E6FF 100%); color: #333; }
-        .theme-btn.fire { background: linear-gradient(135deg, #C33764 0%, #1D2671 100%); color: white; }
-
-        .summary-section {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, #2c5f7a 0%, #1a3a4a 100%);
-            padding: 20px;
-            border-radius: 10px;
-            color: white;
-            text-align: center;
-        }
-
-        .summary-card h3 {
-            font-size: 0.9em;
-            opacity: 0.9;
-            margin-bottom: 5px;
-        }
-
-        .summary-card p {
-            font-size: 1.8em;
-            font-weight: bold;
-        }
-
-        .add-debt-section {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .form-group {
+        .detail-row {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
         }
 
-        .form-group label {
-            margin-bottom: 5px;
+        .detail-label {
+            color: #666;
+        }
+
+        .detail-value {
             font-weight: 600;
             color: #333;
         }
 
+        .account-balance {
+            color: var(--accent-primary);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .add-account-btn {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            border: 2px dashed var(--accent-primary);
+            color: var(--accent-primary);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .add-account-btn:hover {
+            background: var(--accent-bg);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Transactions */
+        .transactions-section {
+            margin-top: 30px;
+        }
+
+        .transactions-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .transaction-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-type {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .transaction-desc {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .transaction-date {
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        .transaction-amount {
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .transaction-amount.positive {
+            color: var(--accent-primary);
+        }
+
+        .transaction-amount.negative {
+            color: #f59e0b;
+        }
+
+        .no-transactions {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
         .form-group input,
         .form-group select {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
             font-size: 1em;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
         }
 
         .checkbox-group {
@@ -245,255 +491,402 @@
             height: 20px;
         }
 
-        .add-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 1.1em;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background 0.3s;
-        }
-
-        .add-btn:hover {
-            background: #218838;
-        }
-
-        .debts-section {
+        /* Emoji Picker */
+        .emoji-picker {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            margin: 10px 0;
         }
 
-        .debt-card {
+        .emoji-btn {
+            font-size: 1.8em;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
             background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .debt-card.bill {
-            border-left: 5px solid #ffc107;
+        .emoji-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-primary);
         }
 
-        .debt-card.debt {
-            border-left: 5px solid #dc3545;
+        .emoji-btn.selected {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+            transform: scale(1.1);
         }
 
-        .debt-header {
+        .modal-buttons {
             display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-top: 25px;
         }
 
-        .debt-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 2em;
+        .modal-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 148, 136, 0.4);
+        }
+
+        .modal-btn.secondary {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Theme Modal */
+        .theme-option {
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #2c5f7a 0%, #1a3a4a 100%);
-        }
-
-        .debt-info h3 {
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        .debt-type {
-            font-size: 0.85em;
-            color: #666;
-            font-style: italic;
-        }
-
-        .delete-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
+            gap: 15px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            margin-bottom: 10px;
             cursor: pointer;
-            font-size: 0.85em;
+            transition: all 0.2s;
         }
 
-        .debt-details {
-            border-top: 1px solid #eee;
-            padding-top: 15px;
+        .theme-option:hover {
+            border-color: var(--accent-primary);
+            background: #f9fafb;
         }
 
-        .detail-row {
+        .theme-option.selected {
+            border-color: var(--accent-primary);
+            background: var(--accent-bg);
+        }
+
+        .theme-preview {
+            width: 80px;
+            height: 50px;
+            border-radius: 8px;
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.95em;
+            overflow: hidden;
         }
 
-        .detail-label {
-            color: #666;
+        .theme-preview-color {
+            flex: 1;
         }
 
-        .detail-value {
+        .theme-name {
             font-weight: 600;
             color: #333;
         }
 
-        .recurring-badge {
-            background: #ffc107;
-            color: #333;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 0.75em;
-            font-weight: bold;
-            margin-left: 5px;
+        .hidden {
+            display: none;
         }
 
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
+        /* Responsive */
+        @media (max-width: 480px) {
+            .header-left h1 {
+                font-size: 1.6em;
             }
 
-            .form-grid {
-                grid-template-columns: 1fr;
+            .balance-item .amount {
+                font-size: 1.2em;
             }
 
-            .debts-section {
-                grid-template-columns: 1fr;
+            .emoji-picker {
+                grid-template-columns: repeat(6, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <h1>💸 IDK My Budget</h1>
+        <p>A debt tracker app for<br>tracking your debts in an app</p>
+        <button class="google-signin-btn" onclick="signInWithGoogle()">
+            <svg class="google-icon" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign in with Google
+        </button>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="container hidden">
         <div class="header">
-            <h1>💸 IDK My Budget</h1>
-            <p>Track Your Debts & Bills Like a Boss</p>
+            <div class="header-left">
+                <h1>💸 IDK My Budget</h1>
+            </div>
+            <div class="header-right">
+                <button class="theme-btn" onclick="showThemeModal()" title="Change Theme">🎨</button>
+                <img id="userAvatar" class="user-avatar" src="" alt="User">
+                <button class="logout-btn" onclick="signOut()">Logout</button>
+            </div>
         </div>
 
-        <!-- Auth Section -->
-        <div id="authSection" class="auth-section">
-            <h2>A debt tracker app for<br>tracking your debts in an app</h2>
-            <button class="google-btn" onclick="signInWithGoogle()">
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                Sign in with Google
-            </button>
-        </div>
-
-        <!-- App Section -->
-        <div id="appSection" class="app-section">
-            <!-- User Info -->
-            <div class="user-info">
-                <div class="user-details">
-                    <img id="userAvatar" class="user-avatar" src="" alt="User">
-                    <div>
-                        <strong id="userName"></strong>
-                        <p style="font-size: 0.9em; color: #666;" id="userEmail"></p>
-                    </div>
-                </div>
-                <button class="logout-btn" onclick="signOut()">Sign Out</button>
-            </div>
-
-            <!-- Theme Selector -->
-            <div class="theme-selector">
-                <h3>Choose Your Vibe 🎨</h3>
-                <div class="theme-buttons">
-                    <button class="theme-btn purple active" onclick="changeTheme('purple')">Purple</button>
-                    <button class="theme-btn ocean" onclick="changeTheme('ocean')">Ocean</button>
-                    <button class="theme-btn sunset" onclick="changeTheme('sunset')">Sunset</button>
-                    <button class="theme-btn forest" onclick="changeTheme('forest')">Forest</button>
-                    <button class="theme-btn midnight" onclick="changeTheme('midnight')">Midnight</button>
-                    <button class="theme-btn cotton-candy" onclick="changeTheme('cotton-candy')">Cotton Candy</button>
-                    <button class="theme-btn fire" onclick="changeTheme('fire')">Fire</button>
-                </div>
-            </div>
-
-            <!-- Summary Section -->
-            <div class="summary-section">
-                <h2>Your Financial Overview</h2>
-                <div class="summary-grid">
-                    <div class="summary-card">
+        <div class="main-content">
+            <!-- Financial Overview -->
+            <div class="total-balance">
+                <h2>Financial Overview</h2>
+                <div class="balance-grid">
+                    <div class="balance-item">
                         <h3>Total Debt</h3>
-                        <p id="totalDebt">$0.00</p>
+                        <div class="amount" id="totalDebt">$0.00</div>
                     </div>
-                    <div class="summary-card" style="background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);">
+                    <div class="balance-item">
                         <h3>Monthly Bills</h3>
-                        <p id="totalBills">$0.00</p>
+                        <div class="amount" id="totalBills">$0.00</div>
                     </div>
-                    <div class="summary-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-                        <h3>Min Payments</h3>
-                        <p id="totalPayments">$0.00</p>
+                    <div class="balance-item">
+                        <h3>Monthly Payments</h3>
+                        <div class="amount" id="totalPayments">$0.00</div>
                     </div>
-                    <div class="summary-card" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                    <div class="balance-item">
                         <h3>Avg Interest</h3>
-                        <p id="avgInterest">0.0%</p>
+                        <div class="amount" id="avgInterest">0.0%</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Add Debt/Bill Form -->
-            <div class="add-debt-section">
-                <h2>Add New Debt or Bill</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="debtName">Name/Description *</label>
-                        <input type="text" id="debtName" placeholder="e.g., Chase Credit Card">
-                    </div>
-                    <div class="form-group">
-                        <label for="debtEmoji">Avatar Emoji</label>
-                        <input type="text" id="debtEmoji" placeholder="💳" maxlength="2">
-                    </div>
-                    <div class="form-group">
-                        <label for="debtType">Type *</label>
-                        <select id="debtType">
-                            <option value="credit-card">Credit Card</option>
-                            <option value="personal-loan">Personal Loan</option>
-                            <option value="car-loan">Car Loan</option>
-                            <option value="student-loan">Student Loan</option>
-                            <option value="mortgage">Mortgage</option>
-                            <option value="utilities">Utilities</option>
-                            <option value="subscription">Subscription</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="debtBalance">Current Balance *</label>
-                        <input type="number" id="debtBalance" placeholder="0.00" step="0.01" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="debtInterest">Interest Rate (%) *</label>
-                        <input type="number" id="debtInterest" placeholder="0.0" step="0.01" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="debtPayment">Monthly Payment *</label>
-                        <input type="number" id="debtPayment" placeholder="0.00" step="0.01" min="0">
-                    </div>
-                </div>
-                <div class="checkbox-group" style="margin-top: 15px;">
-                    <input type="checkbox" id="isRecurring">
-                    <label for="isRecurring">This is a recurring bill (like utilities or subscriptions)</label>
-                </div>
-                <button class="add-btn" onclick="addDebt()">Add to Tracker</button>
+            <!-- Debts/Bills List -->
+            <div class="accounts-section">
+                <h3>Debt & Bill Avatars</h3>
+                <div id="debtsList"></div>
+                <button class="add-account-btn" onclick="showAddDebtModal()">+ Add a Debt or Bill Avatar</button>
             </div>
 
-            <!-- Debts Display -->
-            <div id="debtsContainer" class="debts-section"></div>
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn" onclick="showPaymentModal()" id="paymentBtn" disabled>
+                    Make Payment
+                </button>
+                <button class="action-btn" onclick="showAdjustModal()" id="adjustBtn" disabled>
+                    Adjust Balance
+                </button>
+            </div>
+
+            <!-- Payment History -->
+            <div class="transactions-section">
+                <h3>Payment History</h3>
+                <div id="transactionsList"></div>
+            </div>
         </div>
     </div>
 
+    <!-- Add Debt/Bill Modal -->
+    <div id="addDebtModal" class="modal">
+        <div class="modal-content">
+            <h2>Add Debt or Bill</h2>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="debtName" placeholder="e.g., Chase Credit Card">
+            </div>
+            <div class="form-group">
+                <label>Pick an Emoji</label>
+                <div class="emoji-picker" id="emojiPicker">
+                    <button type="button" class="emoji-btn selected" data-emoji="💳">💳</button>
+                    <button type="button" class="emoji-btn" data-emoji="💰">💰</button>
+                    <button type="button" class="emoji-btn" data-emoji="💸">💸</button>
+                    <button type="button" class="emoji-btn" data-emoji="🏦">🏦</button>
+                    <button type="button" class="emoji-btn" data-emoji="🏠">🏠</button>
+                    <button type="button" class="emoji-btn" data-emoji="🚗">🚗</button>
+                    <button type="button" class="emoji-btn" data-emoji="⚡">⚡</button>
+                    <button type="button" class="emoji-btn" data-emoji="📱">📱</button>
+                    <button type="button" class="emoji-btn" data-emoji="💡">💡</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎓">🎓</button>
+                    <button type="button" class="emoji-btn" data-emoji="🛒">🛒</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎯">🎯</button>
+                    <button type="button" class="emoji-btn" data-emoji="📺">📺</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎵">🎵</button>
+                    <button type="button" class="emoji-btn" data-emoji="🔥">🔥</button>
+                    <button type="button" class="emoji-btn" data-emoji="⭐">⭐</button>
+                </div>
+                <input type="hidden" id="selectedEmoji" value="💳">
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select id="debtType">
+                    <option value="credit-card">Credit Card</option>
+                    <option value="personal-loan">Personal Loan</option>
+                    <option value="car-loan">Car Loan</option>
+                    <option value="student-loan">Student Loan</option>
+                    <option value="mortgage">Mortgage</option>
+                    <option value="utilities">Utilities</option>
+                    <option value="subscription">Subscription</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Current Balance</label>
+                <input type="number" id="debtBalance" placeholder="0.00" step="0.01" value="0">
+            </div>
+            <div class="form-group">
+                <label>Interest Rate (%)</label>
+                <input type="number" id="debtInterest" placeholder="0.0" step="0.01" value="0">
+            </div>
+            <div class="form-group">
+                <label>Monthly Payment</label>
+                <input type="number" id="debtPayment" placeholder="0.00" step="0.01" value="0">
+            </div>
+            <div class="form-group">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="isRecurring" style="margin-right: 8px; width: auto;">
+                    This is a recurring bill
+                </label>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" onclick="closeModal('addDebtModal')">Cancel</button>
+                <button class="modal-btn primary" onclick="addDebt()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <h2>Make Payment</h2>
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" id="paymentAmount" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="paymentDesc" placeholder="Monthly payment, extra payment, etc.">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" onclick="closeModal('paymentModal')">Cancel</button>
+                <button class="modal-btn primary" onclick="makePayment()">Pay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Adjust Balance Modal -->
+    <div id="adjustModal" class="modal">
+        <div class="modal-content">
+            <h2>Adjust Balance</h2>
+            <div class="form-group">
+                <label>New Balance</label>
+                <input type="number" id="adjustBalance" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Reason</label>
+                <input type="text" id="adjustReason" placeholder="e.g., Statement correction, refinance">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" onclick="closeModal('adjustModal')">Cancel</button>
+                <button class="modal-btn primary" onclick="adjustBalance()">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Modal -->
+    <div id="themeModal" class="modal">
+        <div class="modal-content">
+            <h2>Choose Your Vibe</h2>
+            <div class="theme-option" onclick="setTheme('default')">
+                <div class="theme-preview">
+                    <div class="theme-preview-color" style="background: #2c5f7a"></div>
+                    <div class="theme-preview-color" style="background: #0d9488"></div>
+                    <div class="theme-preview-color" style="background: #f59e0b"></div>
+                </div>
+                <div class="theme-name">Teal & Navy (Default)</div>
+            </div>
+            <div class="theme-option" onclick="setTheme('classic')">
+                <div class="theme-preview">
+                    <div class="theme-preview-color" style="background: #000"></div>
+                    <div class="theme-preview-color" style="background: #fff; border: 1px solid #ddd;"></div>
+                    <div class="theme-preview-color" style="background: #000"></div>
+                </div>
+                <div class="theme-name">Classic Black & White</div>
+            </div>
+            <div class="theme-option" onclick="setTheme('ocean')">
+                <div class="theme-preview">
+                    <div class="theme-preview-color" style="background: #0c4a6e"></div>
+                    <div class="theme-preview-color" style="background: #0ea5e9"></div>
+                    <div class="theme-preview-color" style="background: #06b6d4"></div>
+                </div>
+                <div class="theme-name">Ocean Blue</div>
+            </div>
+            <div class="theme-option" onclick="setTheme('royal')">
+                <div class="theme-preview">
+                    <div class="theme-preview-color" style="background: #1e3a8a"></div>
+                    <div class="theme-preview-color" style="background: #6366f1"></div>
+                    <div class="theme-preview-color" style="background: #a855f7"></div>
+                </div>
+                <div class="theme-name">Royal Purple & Blue</div>
+            </div>
+            <div class="theme-option" onclick="setTheme('purple')">
+                <div class="theme-preview">
+                    <div class="theme-preview-color" style="background: #581c87"></div>
+                    <div class="theme-preview-color" style="background: #a855f7"></div>
+                    <div class="theme-preview-color" style="background: #ec4899"></div>
+                </div>
+                <div class="theme-name">Deep Purple</div>
+            </div>
+            <div class="theme-option" onclick="setTheme('pink')">
+                <div class="theme-preview">
+                    <div class="theme-preview-color" style="background: #fce7f3"></div>
+                    <div class="theme-preview-color" style="background: #ec4899"></div>
+                    <div class="theme-preview-color" style="background: #fff"></div>
+                </div>
+                <div class="theme-name">Light Pink & White</div>
+            </div>
+            <div class="theme-option" onclick="setTheme('monochrome')">
+                <div class="theme-preview">
+                    <div class="theme-preview-color" style="background: #000"></div>
+                    <div class="theme-preview-color" style="background: #ef4444"></div>
+                    <div class="theme-preview-color" style="background: #fff"></div>
+                </div>
+                <div class="theme-name">Black Red White</div>
+            </div>
+            <div class="theme-option" onclick="setTheme('forest')">
+                <div class="theme-preview">
+                    <div class="theme-preview-color" style="background: #064e3b"></div>
+                    <div class="theme-preview-color" style="background: #10b981"></div>
+                    <div class="theme-preview-color" style="background: #fbbf24"></div>
+                </div>
+                <div class="theme-name">Forest Green</div>
+            </div>
+            <div class="theme-option" onclick="setTheme('sunset')">
+                <div class="theme-preview">
+                    <div class="theme-preview-color" style="background: #7c2d12"></div>
+                    <div class="theme-preview-color" style="background: #f97316"></div>
+                    <div class="theme-preview-color" style="background: #fbbf24"></div>
+                </div>
+                <div class="theme-name">Sunset Orange</div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" onclick="closeModal('themeModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut as firebaseSignOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-        import { getDatabase, ref, set, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut as firebaseSignOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         // Firebase configuration
         const firebaseConfig = {
@@ -506,183 +899,317 @@
             measurementId: "G-KEZSNJZ4JW"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const database = getDatabase(app);
-        const provider = new GoogleAuthProvider();
+        const db = getFirestore(app);
 
+        // Global variables
         let currentUser = null;
+        let debts = [];
+        let transactions = [];
+        let selectedDebt = null;
+        let selectedEmojiValue = '💳';
+        let unsubscribeDebts = null;
+        let unsubscribeTransactions = null;
 
-        // Auth functions
-        window.signInWithGoogle = async () => {
+        // Make functions globally available
+        window.signInWithGoogle = signInWithGoogle;
+        window.signOut = signOut;
+        window.showAddDebtModal = showAddDebtModal;
+        window.addDebt = addDebt;
+        window.selectDebt = selectDebt;
+        window.deleteDebt = deleteDebt;
+        window.showPaymentModal = showPaymentModal;
+        window.makePayment = makePayment;
+        window.showAdjustModal = showAdjustModal;
+        window.adjustBalance = adjustBalance;
+        window.closeModal = closeModal;
+        window.showThemeModal = showThemeModal;
+        window.setTheme = setTheme;
+
+        // Auth state observer
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                showMainApp();
+                loadUserData();
+            } else {
+                currentUser = null;
+                showLoginScreen();
+            }
+        });
+
+        // Sign in with Google
+        async function signInWithGoogle() {
+            const provider = new GoogleAuthProvider();
             try {
-                const result = await signInWithPopup(auth, provider);
-                currentUser = result.user;
+                await signInWithPopup(auth, provider);
             } catch (error) {
                 console.error('Sign in error:', error);
                 alert('Sign in failed. Please try again.');
             }
-        };
+        }
 
-        window.signOut = async () => {
-            try {
-                await firebaseSignOut(auth);
-                currentUser = null;
-                document.getElementById('authSection').style.display = 'block';
-                document.getElementById('appSection').style.display = 'none';
-            } catch (error) {
-                console.error('Sign out error:', error);
-            }
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('authSection').style.display = 'none';
-                document.getElementById('appSection').style.display = 'block';
-                document.getElementById('userName').textContent = user.displayName;
-                document.getElementById('userEmail').textContent = user.email;
-                document.getElementById('userAvatar').src = user.photoURL;
-                
-                loadDebts();
-                loadTheme();
-            } else {
-                document.getElementById('authSection').style.display = 'block';
-                document.getElementById('appSection').style.display = 'none';
-            }
-        });
-
-        // Theme functions
-        window.changeTheme = (theme) => {
-            document.body.className = theme === 'purple' ? '' : theme;
-            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            if (currentUser) {
-                set(ref(database, `users/${currentUser.uid}/theme`), theme);
-            }
-        };
-
-        function loadTheme() {
-            if (currentUser) {
-                onValue(ref(database, `users/${currentUser.uid}/theme`), (snapshot) => {
-                    const theme = snapshot.val() || 'purple';
-                    document.body.className = theme === 'purple' ? '' : theme;
-                    document.querySelectorAll('.theme-btn').forEach(btn => {
-                        btn.classList.toggle('active', btn.textContent.toLowerCase().replace(' ', '-') === theme);
-                    });
-                });
+        // Sign out
+        async function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                try {
+                    if (unsubscribeDebts) unsubscribeDebts();
+                    if (unsubscribeTransactions) unsubscribeTransactions();
+                    await firebaseSignOut(auth);
+                } catch (error) {
+                    console.error('Sign out error:', error);
+                    alert('Sign out failed. Please try again.');
+                }
             }
         }
 
-        // Debt management
-        window.addDebt = () => {
-            if (!currentUser) return;
+        // Show/hide screens
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
 
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            if (currentUser.photoURL) {
+                document.getElementById('userAvatar').src = currentUser.photoURL;
+            }
+        }
+
+        // Load user data
+        function loadUserData() {
+            const debtsQuery = query(
+                collection(db, 'debts'),
+                where('userId', '==', currentUser.uid)
+            );
+            
+            unsubscribeDebts = onSnapshot(debtsQuery, (snapshot) => {
+                debts = [];
+                snapshot.forEach((doc) => {
+                    debts.push({ id: doc.id, ...doc.data() });
+                });
+                updateUI();
+            });
+
+            const transactionsQuery = query(
+                collection(db, 'debtTransactions'),
+                where('userId', '==', currentUser.uid)
+            );
+            
+            unsubscribeTransactions = onSnapshot(transactionsQuery, (snapshot) => {
+                transactions = [];
+                snapshot.forEach((doc) => {
+                    transactions.push({ id: doc.id, ...doc.data() });
+                });
+                updateUI();
+            });
+        }
+
+        // Emoji picker setup
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selectedEmojiValue = this.getAttribute('data-emoji');
+                    document.getElementById('selectedEmoji').value = selectedEmojiValue;
+                    
+                    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+        });
+
+        // Debt management
+        function showAddDebtModal() {
+            document.getElementById('addDebtModal').classList.add('active');
+            document.getElementById('debtName').value = '';
+            document.getElementById('debtBalance').value = '0';
+            document.getElementById('debtInterest').value = '0';
+            document.getElementById('debtPayment').value = '0';
+            document.getElementById('isRecurring').checked = false;
+            selectedEmojiValue = '💳';
+            
+            document.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector('.emoji-btn').classList.add('selected');
+        }
+
+        async function addDebt() {
             const name = document.getElementById('debtName').value.trim();
-            const emoji = document.getElementById('debtEmoji').value.trim() || '💸';
-            const type = document.getElementById('debtType').value;
             const balance = parseFloat(document.getElementById('debtBalance').value) || 0;
             const interest = parseFloat(document.getElementById('debtInterest').value) || 0;
             const payment = parseFloat(document.getElementById('debtPayment').value) || 0;
+            const type = document.getElementById('debtType').value;
             const isRecurring = document.getElementById('isRecurring').checked;
-
-            if (!name || balance < 0 || payment < 0) {
-                alert('Please fill in all required fields with valid values.');
+            const emoji = selectedEmojiValue;
+            
+            if (!name) {
+                alert('Please enter a name for this debt/bill!');
                 return;
             }
 
-            const debtData = {
-                name,
-                emoji,
-                type,
-                balance,
-                interest,
-                payment,
-                isRecurring,
-                createdAt: new Date().toISOString()
-            };
-
-            const debtsRef = ref(database, `users/${currentUser.uid}/debts`);
-            push(debtsRef, debtData);
-
-            // Clear form
-            document.getElementById('debtName').value = '';
-            document.getElementById('debtEmoji').value = '';
-            document.getElementById('debtType').value = 'credit-card';
-            document.getElementById('debtBalance').value = '';
-            document.getElementById('debtInterest').value = '';
-            document.getElementById('debtPayment').value = '';
-            document.getElementById('isRecurring').checked = false;
-        };
-
-        window.deleteDebt = (debtId) => {
-            if (!currentUser || !confirm('Are you sure you want to delete this item?')) return;
-            remove(ref(database, `users/${currentUser.uid}/debts/${debtId}`));
-        };
-
-        function loadDebts() {
-            if (!currentUser) return;
-
-            onValue(ref(database, `users/${currentUser.uid}/debts`), (snapshot) => {
-                const debts = snapshot.val() || {};
-                displayDebts(debts);
-                updateSummary(debts);
-            });
+            try {
+                await addDoc(collection(db, 'debts'), {
+                    userId: currentUser.uid,
+                    name: name,
+                    emoji: emoji,
+                    type: type,
+                    balance: balance,
+                    interest: interest,
+                    payment: payment,
+                    isRecurring: isRecurring,
+                    createdAt: serverTimestamp()
+                });
+                
+                closeModal('addDebtModal');
+            } catch (error) {
+                console.error('Error adding debt:', error);
+                alert('Failed to add debt/bill. Please try again.');
+            }
         }
 
-        function displayDebts(debts) {
-            const container = document.getElementById('debtsContainer');
-            container.innerHTML = '';
-
-            Object.entries(debts).forEach(([id, debt]) => {
-                const card = document.createElement('div');
-                card.className = `debt-card ${debt.isRecurring ? 'bill' : 'debt'}`;
-                card.innerHTML = `
-                    <div class="debt-header">
-                        <div style="display: flex; gap: 15px; align-items: center;">
-                            <div class="debt-avatar">${debt.emoji}</div>
-                            <div class="debt-info">
-                                <h3>
-                                    ${debt.name}
-                                    ${debt.isRecurring ? '<span class="recurring-badge">RECURRING</span>' : ''}
-                                </h3>
-                                <div class="debt-type">${formatType(debt.type)}</div>
-                            </div>
-                        </div>
-                        <button class="delete-btn" onclick="deleteDebt('${id}')">✕</button>
-                    </div>
-                    <div class="debt-details">
-                        <div class="detail-row">
-                            <span class="detail-label">Current Balance:</span>
-                            <span class="detail-value">$${debt.balance.toFixed(2)}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Interest Rate:</span>
-                            <span class="detail-value">${debt.interest.toFixed(2)}%</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Monthly Payment:</span>
-                            <span class="detail-value">$${debt.payment.toFixed(2)}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Added:</span>
-                            <span class="detail-value">${new Date(debt.createdAt).toLocaleDateString()}</span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+        function selectDebt(debtId) {
+            selectedDebt = debtId;
+            updateUI();
         }
 
-        function updateSummary(debts) {
+        async function deleteDebt(debtId, event) {
+            event.stopPropagation();
+            
+            const debt = debts.find(d => d.id === debtId);
+            
+            if (confirm(`Delete ${debt.emoji} ${debt.name}?`)) {
+                try {
+                    await deleteDoc(doc(db, 'debts', debtId));
+                    
+                    const transactionsQuery = query(
+                        collection(db, 'debtTransactions'),
+                        where('debtId', '==', debtId)
+                    );
+                    const transactionsSnapshot = await getDocs(transactionsQuery);
+                    transactionsSnapshot.forEach(async (docSnapshot) => {
+                        await deleteDoc(doc(db, 'debtTransactions', docSnapshot.id));
+                    });
+                    
+                    if (selectedDebt === debtId) {
+                        selectedDebt = null;
+                    }
+                } catch (error) {
+                    console.error('Error deleting debt:', error);
+                    alert('Failed to delete. Please try again.');
+                }
+            }
+        }
+
+        // Payment management
+        function showPaymentModal() {
+            if (!selectedDebt) return;
+            
+            document.getElementById('paymentModal').classList.add('active');
+            document.getElementById('paymentAmount').value = '';
+            document.getElementById('paymentDesc').value = '';
+        }
+
+        async function makePayment() {
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const desc = document.getElementById('paymentDesc').value.trim() || 'Payment';
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid payment amount!');
+                return;
+            }
+
+            const debt = debts.find(d => d.id === selectedDebt);
+            
+            if (amount > debt.balance) {
+                if (!confirm('Payment is more than the balance. Continue?')) {
+                    return;
+                }
+            }
+
+            try {
+                await addDoc(collection(db, 'debtTransactions'), {
+                    userId: currentUser.uid,
+                    debtId: selectedDebt,
+                    type: 'payment',
+                    amount: -amount,
+                    description: desc,
+                    date: serverTimestamp()
+                });
+
+                await updateDoc(doc(db, 'debts', selectedDebt), {
+                    balance: Math.max(0, debt.balance - amount)
+                });
+                
+                closeModal('paymentModal');
+            } catch (error) {
+                console.error('Error making payment:', error);
+                alert('Failed to record payment. Please try again.');
+            }
+        }
+
+        function showAdjustModal() {
+            if (!selectedDebt) return;
+            
+            const debt = debts.find(d => d.id === selectedDebt);
+            document.getElementById('adjustModal').classList.add('active');
+            document.getElementById('adjustBalance').value = debt.balance;
+            document.getElementById('adjustReason').value = '';
+        }
+
+        async function adjustBalance() {
+            const newBalance = parseFloat(document.getElementById('adjustBalance').value);
+            const reason = document.getElementById('adjustReason').value.trim() || 'Balance adjustment';
+            
+            if (newBalance < 0) {
+                alert('Balance cannot be negative!');
+                return;
+            }
+
+            const debt = debts.find(d => d.id === selectedDebt);
+            const difference = newBalance - debt.balance;
+
+            try {
+                await addDoc(collection(db, 'debtTransactions'), {
+                    userId: currentUser.uid,
+                    debtId: selectedDebt,
+                    type: 'adjustment',
+                    amount: difference,
+                    description: reason,
+                    date: serverTimestamp()
+                });
+
+                await updateDoc(doc(db, 'debts', selectedDebt), {
+                    balance: newBalance
+                });
+                
+                closeModal('adjustModal');
+            } catch (error) {
+                console.error('Error adjusting balance:', error);
+                alert('Failed to adjust balance. Please try again.');
+            }
+        }
+
+        // UI updates
+        function updateUI() {
+            updateFinancialOverview();
+            updateDebtsList();
+            updateTransactionsList();
+            updateActionButtons();
+        }
+
+        function updateFinancialOverview() {
             let totalDebt = 0;
             let totalBills = 0;
             let totalPayments = 0;
             let totalInterest = 0;
             let debtCount = 0;
 
-            Object.values(debts).forEach(debt => {
+            debts.forEach(debt => {
                 if (debt.isRecurring) {
                     totalBills += debt.balance;
                 } else {
@@ -693,19 +1220,231 @@
                 totalPayments += debt.payment;
             });
 
-            document.getElementById('totalDebt').textContent = `$${totalDebt.toFixed(2)}`;
-            document.getElementById('totalBills').textContent = `$${totalBills.toFixed(2)}`;
-            document.getElementById('totalPayments').textContent = `$${totalPayments.toFixed(2)}`;
+            document.getElementById('totalDebt').textContent = '$' + totalDebt.toFixed(2);
+            document.getElementById('totalBills').textContent = '$' + totalBills.toFixed(2);
+            document.getElementById('totalPayments').textContent = '$' + totalPayments.toFixed(2);
             document.getElementById('avgInterest').textContent = debtCount > 0 
-                ? `${(totalInterest / debtCount).toFixed(1)}%` 
+                ? (totalInterest / debtCount).toFixed(1) + '%' 
                 : '0.0%';
         }
 
-        function formatType(type) {
-            return type.split('-').map(word => 
-                word.charAt(0).toUpperCase() + word.slice(1)
-            ).join(' ');
+        function updateDebtsList() {
+            const list = document.getElementById('debtsList');
+            list.innerHTML = '';
+            
+            debts.forEach(debt => {
+                const card = document.createElement('div');
+                card.className = 'account-card' + (selectedDebt === debt.id ? ' selected' : '');
+                card.onclick = () => selectDebt(debt.id);
+                
+                const typeLabel = debt.type.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+                
+                card.innerHTML = `
+                    <div class="account-header">
+                        <div class="account-info">
+                            <h4>${debt.emoji} ${debt.name}</h4>
+                            <div>
+                                <span class="debt-type-badge">${typeLabel}</span>
+                                ${debt.isRecurring ? '<span class="recurring-badge">RECURRING</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="account-actions">
+                            <button class="icon-btn delete-btn" onclick="deleteDebt('${debt.id}', event)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="account-bottom">
+                        <div class="detail-row">
+                            <span class="detail-label">Balance:</span>
+                            <span class="detail-value">$${debt.balance.toFixed(2)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Interest:</span>
+                            <span class="detail-value">${debt.interest.toFixed(2)}%</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Monthly Payment:</span>
+                            <span class="detail-value">$${debt.payment.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+                
+                list.appendChild(card);
+            });
         }
+
+        function updateTransactionsList() {
+            const list = document.getElementById('transactionsList');
+            
+            if (!selectedDebt) {
+                list.innerHTML = '<div class="no-transactions">Select a debt/bill to see payment history</div>';
+                return;
+            }
+
+            const debtTransactions = transactions
+                .filter(t => t.debtId === selectedDebt)
+                .sort((a, b) => {
+                    const aDate = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+                    const bDate = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+                    return bDate - aDate;
+                })
+                .slice(0, 10);
+            
+            if (debtTransactions.length === 0) {
+                list.innerHTML = '<div class="no-transactions">No payments yet</div>';
+                return;
+            }
+
+            list.innerHTML = '';
+            debtTransactions.forEach(transaction => {
+                const item = document.createElement('div');
+                item.className = 'transaction-item';
+                
+                const typeLabel = transaction.type === 'payment' ? 'Payment' : 'Adjustment';
+                
+                const date = transaction.date?.toDate ? transaction.date.toDate() : new Date(transaction.date);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                item.innerHTML = `
+                    <div class="transaction-info">
+                        <div class="transaction-type">${typeLabel}</div>
+                        <div class="transaction-desc">${transaction.description}</div>
+                        <div class="transaction-date">${dateStr}</div>
+                    </div>
+                    <div class="transaction-amount ${transaction.amount >= 0 ? 'negative' : 'positive'}">
+                        ${transaction.amount >= 0 ? '+' : ''}$${Math.abs(transaction.amount).toFixed(2)}
+                    </div>
+                `;
+                
+                list.appendChild(item);
+            });
+        }
+
+        function updateActionButtons() {
+            const hasDebt = selectedDebt !== null;
+            document.getElementById('paymentBtn').disabled = !hasDebt;
+            document.getElementById('adjustBtn').disabled = !hasDebt;
+        }
+
+        // Utility functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Theme management
+        const themes = {
+            default: {
+                primaryStart: '#2c5f7a',
+                primaryEnd: '#1a3a4a',
+                accentPrimary: '#0d9488',
+                accentSecondary: '#0f766e',
+                accentBg: '#f0fdfa',
+                balanceStart: '#0d9488',
+                balanceEnd: '#0f766e'
+            },
+            classic: {
+                primaryStart: '#000000',
+                primaryEnd: '#000000',
+                accentPrimary: '#000000',
+                accentSecondary: '#000000',
+                accentBg: '#ffffff',
+                balanceStart: '#000000',
+                balanceEnd: '#000000'
+            },
+            monochrome: {
+                primaryStart: '#000000',
+                primaryEnd: '#1a1a1a',
+                accentPrimary: '#ef4444',
+                accentSecondary: '#dc2626',
+                accentBg: '#fee2e2',
+                balanceStart: '#000000',
+                balanceEnd: '#1a1a1a'
+            },
+            pink: {
+                primaryStart: '#fce7f3',
+                primaryEnd: '#fbcfe8',
+                accentPrimary: '#ec4899',
+                accentSecondary: '#db2777',
+                accentBg: '#fce7f3',
+                balanceStart: '#fce7f3',
+                balanceEnd: '#fbcfe8'
+            },
+            purple: {
+                primaryStart: '#581c87',
+                primaryEnd: '#3b0764',
+                accentPrimary: '#a855f7',
+                accentSecondary: '#9333ea',
+                accentBg: '#f3e8ff',
+                balanceStart: '#a855f7',
+                balanceEnd: '#9333ea'
+            },
+            ocean: {
+                primaryStart: '#0c4a6e',
+                primaryEnd: '#082f49',
+                accentPrimary: '#0ea5e9',
+                accentSecondary: '#0284c7',
+                accentBg: '#e0f2fe',
+                balanceStart: '#0ea5e9',
+                balanceEnd: '#0284c7'
+            },
+            royal: {
+                primaryStart: '#1e3a8a',
+                primaryEnd: '#1e1b4b',
+                accentPrimary: '#6366f1',
+                accentSecondary: '#4f46e5',
+                accentBg: '#e0e7ff',
+                balanceStart: '#6366f1',
+                balanceEnd: '#4f46e5'
+            },
+            forest: {
+                primaryStart: '#064e3b',
+                primaryEnd: '#022c22',
+                accentPrimary: '#10b981',
+                accentSecondary: '#059669',
+                accentBg: '#d1fae5',
+                balanceStart: '#10b981',
+                balanceEnd: '#059669'
+            },
+            sunset: {
+                primaryStart: '#7c2d12',
+                primaryEnd: '#431407',
+                accentPrimary: '#f97316',
+                accentSecondary: '#ea580c',
+                accentBg: '#ffedd5',
+                balanceStart: '#f97316',
+                balanceEnd: '#ea580c'
+            }
+        };
+
+        function showThemeModal() {
+            document.getElementById('themeModal').classList.add('active');
+        }
+
+        function setTheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            root.style.setProperty('--primary-start', theme.primaryStart);
+            root.style.setProperty('--primary-end', theme.primaryEnd);
+            root.style.setProperty('--accent-primary', theme.accentPrimary);
+            root.style.setProperty('--accent-secondary', theme.accentSecondary);
+            root.style.setProperty('--accent-bg', theme.accentBg);
+            root.style.setProperty('--balance-start', theme.balanceStart);
+            root.style.setProperty('--balance-end', theme.balanceEnd);
+
+            localStorage.setItem('idkBudgetTheme', themeName);
+            closeModal('themeModal');
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('idkBudgetTheme') || 'default';
+            if (savedTheme && themes[savedTheme]) {
+                setTheme(savedTheme);
+            }
+        });
     </script>
 </body>
 </html>
