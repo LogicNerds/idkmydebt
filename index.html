@@ -1211,13 +1211,13 @@
 
             debts.forEach(debt => {
                 if (debt.isRecurring) {
-                    totalBills += debt.balance;
+                    totalBills += debt.payment;  // Sum of monthly payments for recurring bills
                 } else {
                     totalDebt += debt.balance;
                     totalInterest += debt.interest;
                     debtCount++;
                 }
-                totalPayments += debt.payment;
+                totalPayments += debt.payment;  // Grand total of ALL monthly payments
             });
 
             document.getElementById('totalDebt').textContent = '$' + totalDebt.toFixed(2);
