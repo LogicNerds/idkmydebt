@@ -97,7 +97,12 @@
             color: white;
             padding: 25px 20px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
             align-items: center;
         }
 
@@ -146,7 +151,7 @@
 
         /* Main Content */
         .main-content {
-            padding: 20px 20px 80px 20px;
+            padding: 100px 20px 80px 20px;
         }
 
         /* Financial Overview Card */
@@ -723,8 +728,10 @@
     <!-- Main App -->
     <div id="mainApp" class="container hidden">
         <div class="header">
-            <div class="header-right">
+            <div class="header-left">
                 <button class="theme-btn" onclick="showThemeModal()" title="Change Theme">🎨</button>
+            </div>
+            <div class="header-right">
                 <img id="userAvatar" class="user-avatar" src="" alt="User">
                 <button class="logout-btn" onclick="signOut()">Logout</button>
             </div>
