@@ -97,12 +97,8 @@
             color: white;
             padding: 25px 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-        }
-
-        .header-left h1 {
-            font-size: 2em;
         }
 
         .header-right {
@@ -698,10 +694,6 @@
 
         /* Responsive */
         @media (max-width: 480px) {
-            .header-left h1 {
-                font-size: 1.6em;
-            }
-
             .balance-item .amount {
                 font-size: 1.2em;
             }
@@ -731,9 +723,6 @@
     <!-- Main App -->
     <div id="mainApp" class="container hidden">
         <div class="header">
-            <div class="header-left">
-                <h1>💸 IDK My Budget</h1>
-            </div>
             <div class="header-right">
                 <button class="theme-btn" onclick="showThemeModal()" title="Change Theme">🎨</button>
                 <img id="userAvatar" class="user-avatar" src="" alt="User">
