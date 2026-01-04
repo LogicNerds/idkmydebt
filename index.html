@@ -151,7 +151,7 @@
 
         /* Main Content */
         .main-content {
-            padding: 20px 20px 80px 20px;
+            padding: 100px 20px 80px 20px;
         }
 
         /* Financial Overview Card */
@@ -213,11 +213,6 @@
             border-color: var(--accent-primary);
             box-shadow: 0 3px 10px rgba(13, 148, 136, 0.2);
             transform: translateY(-2px);
-        }
-
-        .account-card.selected {
-            border-color: var(--accent-primary);
-            background: var(--accent-bg);
         }
 
         .account-header {
@@ -322,6 +317,87 @@
 
         .add-account-btn:hover {
             background: var(--accent-bg);
+        }
+
+        /* Back Button */
+        .back-btn {
+            background: white;
+            border: 2px solid var(--accent-primary);
+            color: var(--accent-primary);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: var(--accent-bg);
+        }
+
+        /* Debt Detail Card */
+        .debt-detail-card {
+            background: white;
+            border: 2px solid var(--accent-primary);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .debt-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .debt-detail-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+        }
+
+        .debt-detail-info h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .debt-detail-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .debt-stat {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .debt-stat-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .debt-stat-value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
         }
 
         /* Action Buttons */
@@ -768,13 +844,37 @@
                 <div id="debtsList"></div>
                 <button class="add-account-btn" onclick="showAddDebtModal()">+ Add a Debt or Bill Avatar</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Debt Detail View -->
+    <div id="debtDetailView" class="container hidden">
+        <div class="header">
+            <div class="header-left">
+                <button class="theme-btn" onclick="showThemeModal()" title="Change Theme">🎨</button>
+                <span style="margin-left: 15px; font-size: 1.2em; font-weight: 600;">My Budget</span>
+            </div>
+            <div class="header-right">
+                <img id="userAvatar2" class="user-avatar" src="" alt="User">
+                <button class="logout-btn" onclick="signOut()">Logout</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Back Button -->
+            <button class="back-btn" onclick="backToMainView()">← Back to All Debts</button>
+
+            <!-- Debt Info Card -->
+            <div class="debt-detail-card" id="debtDetailCard">
+                <!-- Content filled by JavaScript -->
+            </div>
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <button class="action-btn" onclick="showPaymentModal()" id="paymentBtn" disabled>
+                <button class="action-btn" onclick="showPaymentModal()">
                     Make Payment
                 </button>
-                <button class="action-btn" onclick="showAdjustModal()" id="adjustBtn" disabled>
+                <button class="action-btn" onclick="showAdjustModal()">
                     Adjust Balance
                 </button>
             </div>
@@ -782,7 +882,7 @@
             <!-- Payment History -->
             <div class="transactions-section">
                 <h3>Payment History</h3>
-                <div id="transactionsList"></div>
+                <div id="detailTransactionsList"></div>
             </div>
         </div>
     </div>
@@ -1031,7 +1131,8 @@
         window.signOut = signOut;
         window.showAddDebtModal = showAddDebtModal;
         window.addDebt = addDebt;
-        window.selectDebt = selectDebt;
+        window.viewDebtDetail = viewDebtDetail;
+        window.backToMainView = backToMainView;
         window.deleteDebt = deleteDebt;
         window.showPaymentModal = showPaymentModal;
         window.makePayment = makePayment;
@@ -1089,10 +1190,27 @@
         function showMainApp() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('debtDetailView').classList.add('hidden');
             
             if (currentUser.photoURL) {
                 document.getElementById('userAvatar').src = currentUser.photoURL;
+                document.getElementById('userAvatar2').src = currentUser.photoURL;
             }
+        }
+
+        // View navigation
+        function viewDebtDetail(debtId) {
+            selectedDebt = debtId;
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('debtDetailView').classList.remove('hidden');
+            updateDebtDetailView();
+            updateDetailTransactionsList();
+        }
+
+        function backToMainView() {
+            selectedDebt = null;
+            document.getElementById('debtDetailView').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
         }
 
         // Load user data
@@ -1187,11 +1305,6 @@
             }
         }
 
-        function selectDebt(debtId) {
-            selectedDebt = debtId;
-            updateUI();
-        }
-
         async function deleteDebt(debtId, event) {
             event.stopPropagation();
             
@@ -1211,7 +1324,7 @@
                     });
                     
                     if (selectedDebt === debtId) {
-                        selectedDebt = null;
+                        backToMainView();
                     }
                 } catch (error) {
                     console.error('Error deleting debt:', error);
@@ -1222,8 +1335,6 @@
 
         // Payment management
         function showPaymentModal() {
-            if (!selectedDebt) return;
-            
             document.getElementById('paymentModal').classList.add('active');
             document.getElementById('paymentAmount').value = '';
             document.getElementById('paymentDesc').value = '';
@@ -1261,6 +1372,8 @@
                 });
                 
                 closeModal('paymentModal');
+                updateDebtDetailView();
+                updateDetailTransactionsList();
             } catch (error) {
                 console.error('Error making payment:', error);
                 alert('Failed to record payment. Please try again.');
@@ -1268,8 +1381,6 @@
         }
 
         function showAdjustModal() {
-            if (!selectedDebt) return;
-            
             const debt = debts.find(d => d.id === selectedDebt);
             document.getElementById('adjustModal').classList.add('active');
             document.getElementById('adjustBalance').value = debt.balance;
@@ -1303,6 +1414,8 @@
                 });
                 
                 closeModal('adjustModal');
+                updateDebtDetailView();
+                updateDetailTransactionsList();
             } catch (error) {
                 console.error('Error adjusting balance:', error);
                 alert('Failed to adjust balance. Please try again.');
@@ -1313,8 +1426,6 @@
         function updateUI() {
             updateFinancialOverview();
             updateDebtsList();
-            updateTransactionsList();
-            updateActionButtons();
         }
 
         function updateFinancialOverview() {
@@ -1349,8 +1460,8 @@
             
             debts.forEach(debt => {
                 const card = document.createElement('div');
-                card.className = 'account-card' + (selectedDebt === debt.id ? ' selected' : '');
-                card.onclick = () => selectDebt(debt.id);
+                card.className = 'account-card';
+                card.onclick = () => viewDebtDetail(debt.id);
                 
                 const typeLabel = debt.type.split('-').map(word => 
                     word.charAt(0).toUpperCase() + word.slice(1)
@@ -1389,11 +1500,54 @@
             });
         }
 
-        function updateTransactionsList() {
-            const list = document.getElementById('transactionsList');
+        function updateDebtDetailView() {
+            if (!selectedDebt) return;
+            
+            const debt = debts.find(d => d.id === selectedDebt);
+            if (!debt) return;
+            
+            const typeLabel = debt.type.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+            
+            const card = document.getElementById('debtDetailCard');
+            card.innerHTML = `
+                <div class="debt-detail-header">
+                    <div class="debt-detail-avatar">${debt.emoji}</div>
+                    <div class="debt-detail-info">
+                        <h2>${debt.name}</h2>
+                        <div>
+                            <span class="debt-type-badge">${typeLabel}</span>
+                            ${debt.isRecurring ? '<span class="recurring-badge">RECURRING</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="debt-detail-stats">
+                    <div class="debt-stat">
+                        <div class="debt-stat-label">Current Balance</div>
+                        <div class="debt-stat-value">$${debt.balance.toFixed(2)}</div>
+                    </div>
+                    <div class="debt-stat">
+                        <div class="debt-stat-label">Interest Rate</div>
+                        <div class="debt-stat-value">${debt.interest.toFixed(2)}%</div>
+                    </div>
+                    <div class="debt-stat">
+                        <div class="debt-stat-label">Monthly Payment</div>
+                        <div class="debt-stat-value">$${debt.payment.toFixed(2)}</div>
+                    </div>
+                    <div class="debt-stat">
+                        <div class="debt-stat-label">Type</div>
+                        <div class="debt-stat-value" style="font-size: 1em;">${debt.isRecurring ? 'Recurring Bill' : 'Debt'}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateDetailTransactionsList() {
+            const list = document.getElementById('detailTransactionsList');
             
             if (!selectedDebt) {
-                list.innerHTML = '<div class="no-transactions">Select a debt/bill to see payment history</div>';
+                list.innerHTML = '<div class="no-transactions">No debt selected</div>';
                 return;
             }
 
@@ -1434,12 +1588,6 @@
                 
                 list.appendChild(item);
             });
-        }
-
-        function updateActionButtons() {
-            const hasDebt = selectedDebt !== null;
-            document.getElementById('paymentBtn').disabled = !hasDebt;
-            document.getElementById('adjustBtn').disabled = !hasDebt;
         }
 
         // Utility functions
